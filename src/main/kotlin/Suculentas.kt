@@ -10,7 +10,7 @@ class Suculentas(
     especie: EspeciesSuculentas,
     fechaUltimoTransplante: LocalDate,
     nombre: String,
-    tipo: List<TipoPlanta>,
+    tipo: TipoPlanta,
     humedad: Int,
     estado: EstadoPlanta,
     estadoCrecimiento: Crecimiento,
@@ -31,7 +31,7 @@ class Suculentas(
 ), RealizarCuidados {
 
     // Propiedades de clase
-    private var especie: EspeciesSuculentas = especie
+    private var especie: EspeciesSuculentas = EspeciesSuculentas.entries.random()
         set(value) {
             require(especie in EspeciesSuculentas.entries) { "Ésta especie no se encuentra registrada." }
             field = value
@@ -45,23 +45,24 @@ class Suculentas(
     // Metodos:
     override fun regar(humedad: Int) {
         println("$nombre está siendo regada...")
-        super.humedad = 10
+        this.humedad = 10
+        this.fechaUltimoRiego = LocalDate.now()
         // TODO ampliacion: Agregar condición, según días pasados desde el último riego, que agrege probabilidad de sobrehidratar la planta.
     }
 
     override fun abonar() {
-        println("$nombre está siendo abonada...")
+        println("${this.nombre} está siendo abonada...")
+        this.fechaUltimoAbonado = LocalDate.now()
         // TODO Ampliación: implementación de probabilidad para Crecimiento/Floración de la planta.
     }
 
     override fun transplantar() {
-        println("$nombre está siendo transplantada...")
-        TODO("Not yet implemented")
+        println("${this.nombre} está siendo transplantada...")
+        // TODO Ampliacion: implantación probabilidad éxito según riego y abonado.
     }
 
     override fun podar() {
-        println("La planta está siendo podada...")
-        TODO("Not yet implemented")
+        println("${this.nombre} está siendo podada...")
     }
 }
 

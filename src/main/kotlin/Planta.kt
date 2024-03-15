@@ -14,7 +14,7 @@ import java.time.LocalDate
  */
 abstract class Planta(
     nombre: String,
-    tipo: List<TipoPlanta>,
+    tipo: TipoPlanta,
     humedad: Int,
     estado: EstadoPlanta,
     estadoCrecimiento: Crecimiento,
@@ -22,36 +22,35 @@ abstract class Planta(
     fechaCrecimiento: LocalDate,
     fechaUltimoRiego: LocalDate,
     fechaUltimoAbonado: LocalDate
-) : RealizarCuidados {
+) : RealizarCuidados , GestionConsola {
 
     // Propiedades de Planta
-    var nombre: String = nombre
+    open var nombre: String = nombre
         set(value) {
             require(nombre.isNotBlank()) { "Éste campo no puede estar vacío." }
             field = value
         }
-    var tipo: List<TipoPlanta> = tipo
+    open var tipo: TipoPlanta = TipoPlanta.entries.random()
         set(value) {
-            require(tipo.isNotEmpty()) { "Éste campo no puede estar vacío." }
-            require(tipo.all { it in TipoPlanta.entries.toTypedArray() }) { "No tenemos registrada ése tipo de planta." }
+            require(tipo in TipoPlanta.entries) { "No tenemos registrada ése tipo de planta." }
             field = value
         }
-    var humedad: Int = humedad
+    open var humedad: Int = humedad
         set(value) {
             require(humedad in 1..10) { "El nivel de humedad en la tierra debe estar en la escala 1-10." }
             field = value
         }
-    var estado: EstadoPlanta = estado
+    open var estado: EstadoPlanta = EstadoPlanta.entries.random()
         set(value) {
             require(estado in EstadoPlanta.entries) { "Estado del sustrato desconocido." }
             field = value
         }
-    var estadoCrecimiento: Crecimiento = estadoCrecimiento
+    var estadoCrecimiento: Crecimiento = Crecimiento.entries.random()
         set(value) {
             require(estadoCrecimiento in Crecimiento.entries) { "No se reconoce el estado de la planta." }
             field = value
         }
-    var embergaduraFinal: AlturaPlanta = embergaduraFinal
+    var embergaduraFinal: AlturaPlanta = AlturaPlanta.entries.random()
         set(value) {
             require(embergaduraFinal in AlturaPlanta.entries) { "No tenemos registros de ése tipo de embergadura." }
             field = value
@@ -70,10 +69,19 @@ abstract class Planta(
             require(fechaUltimoRiego <= LocalDate.now()) { "La fecha del último riego no puede ser posterior a la del día de hoy." }
             field = value
         }
-    private var fechaUltimoAbonado: LocalDate = fechaUltimoAbonado
+    var fechaUltimoAbonado: LocalDate = fechaUltimoAbonado
         set(value) {
             require(fechaUltimoAbonado <= LocalDate.now()) { "La fecha del último abonado no puede ser posterior al día de hoy." }
             field = value
         }
 
+    override fun printText(texto: String): String {
+        return texto
+    }
+    override fun toString(): String {
+        return "$nombre, es una $tipo, $estadoCrecimiento. " +
+                "Estado del ustrato: $estado.\n" +
+                "Último riego: $fechaUltimoRiego\n" +
+                "Último abonado: $fechaUltimoAbonado\n"
+    }
 }
