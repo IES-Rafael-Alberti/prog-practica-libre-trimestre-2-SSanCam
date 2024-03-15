@@ -15,29 +15,43 @@ import java.time.LocalDate
 abstract class Planta(
     nombre: String,
     tipo: List<TipoPlanta>,
+    humedad: Int,
+    estado: EstadoPlanta,
     estadoCrecimiento: Crecimiento,
     embergaduraFinal: AlturaPlanta,
     fechaCrecimiento: LocalDate,
     fechaUltimoRiego: LocalDate,
     fechaUltimoAbonado: LocalDate
-) {
-    open var nombre: String = nombre
+) : RealizarCuidados {
+
+    // Propiedades de Planta
+    var nombre: String = nombre
         set(value) {
             require(nombre.isNotBlank()) { "Éste campo no puede estar vacío." }
             field = value
         }
-    open var tipo: List<TipoPlanta> = tipo
+    var tipo: List<TipoPlanta> = tipo
         set(value) {
             require(tipo.isNotEmpty()) { "Éste campo no puede estar vacío." }
             require(tipo.all { it in TipoPlanta.entries.toTypedArray() }) { "No tenemos registrada ése tipo de planta." }
             field = value
         }
-    open var estadoCrecimiento: Crecimiento = estadoCrecimiento
+    var humedad: Int = humedad
+        set(value) {
+            require(humedad in 1..10) { "El nivel de humedad en la tierra debe estar en la escala 1-10." }
+            field = value
+        }
+    var estado: EstadoPlanta = estado
+        set(value) {
+            require(estado in EstadoPlanta.entries) { "Estado del sustrato desconocido." }
+            field = value
+        }
+    var estadoCrecimiento: Crecimiento = estadoCrecimiento
         set(value) {
             require(estadoCrecimiento in Crecimiento.entries) { "No se reconoce el estado de la planta." }
             field = value
         }
-    open var embergaduraFinal: AlturaPlanta = embergaduraFinal
+    var embergaduraFinal: AlturaPlanta = embergaduraFinal
         set(value) {
             require(embergaduraFinal in AlturaPlanta.entries) { "No tenemos registros de ése tipo de embergadura." }
             field = value
@@ -51,14 +65,15 @@ abstract class Planta(
             require(fechaCrecimiento <= LocalDate.now()) { "La fecha no puede ser posterior a la del día de hoy." }
             field = value
         }
-    private var fechaUltimoRiego: LocalDate = fechaUltimoRiego
+    var fechaUltimoRiego: LocalDate = fechaUltimoRiego
         set(value) {
             require(fechaUltimoRiego <= LocalDate.now()) { "La fecha del último riego no puede ser posterior a la del día de hoy." }
             field = value
         }
     private var fechaUltimoAbonado: LocalDate = fechaUltimoAbonado
         set(value) {
-            require(fechaUltimoAbonado >= LocalDate.now()) { "La fecha del último abonado no puede ser posterior al día de hoy." }
+            require(fechaUltimoAbonado <= LocalDate.now()) { "La fecha del último abonado no puede ser posterior al día de hoy." }
             field = value
         }
+
 }

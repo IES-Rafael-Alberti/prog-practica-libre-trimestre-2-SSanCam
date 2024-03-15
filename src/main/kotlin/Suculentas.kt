@@ -3,30 +3,65 @@ import java.time.LocalDate
 
 /**
  * Clase genérica que representa a las suculentas.
- * @param T Indica el tipo específico de suculenta.
  * @property especie Indica la especie concreta de suculenta.
  * @property fechaUltimoTransplante Indica la fecha en la que se transplantó por última vez.
  */
-abstract class Suculentas<T> (
-    especie: String,
+class Suculentas(
+    especie: EspeciesSuculentas,
     fechaUltimoTransplante: LocalDate,
     nombre: String,
     tipo: List<TipoPlanta>,
+    humedad: Int,
+    estado: EstadoPlanta,
     estadoCrecimiento: Crecimiento,
     embergaduraFinal: AlturaPlanta,
     fechaCrecimiento: LocalDate,
     fechaUltimoRiego: LocalDate,
     fechaUltimoAbonado: LocalDate
-): Planta(nombre, tipo, estadoCrecimiento, embergaduraFinal, fechaCrecimiento, fechaUltimoRiego, fechaUltimoAbonado){
+) : Planta(
+    nombre,
+    tipo,
+    humedad,
+    estado,
+    estadoCrecimiento,
+    embergaduraFinal,
+    fechaCrecimiento,
+    fechaUltimoRiego,
+    fechaUltimoAbonado
+), RealizarCuidados {
 
-    var especie: String = especie
+    // Propiedades de clase
+    private var especie: EspeciesSuculentas = especie
         set(value) {
-            require(especie.isNotBlank()) {"Éste campo no puede estar vacío."}
+            require(especie in EspeciesSuculentas.entries) { "Ésta especie no se encuentra registrada." }
             field = value
         }
-    var fechaUltimoTransplante: LocalDate = fechaUltimoTransplante
+    private var fechaUltimoTransplante: LocalDate = fechaUltimoTransplante
         set(value) {
-            require(fechaUltimoTransplante <= LocalDate.now()) {"La fecha del transplante no puede ser superior a la de hoy."}
+            require(fechaUltimoTransplante <= LocalDate.now()) { "La fecha del transplante no puede ser superior a la de hoy." }
             field = value
         }
+
+    // Metodos:
+    override fun regar(humedad: Int) {
+        println("$nombre está siendo regada...")
+        super.humedad = 10
+        // TODO ampliacion: Agregar condición, según días pasados desde el último riego, que agrege probabilidad de sobrehidratar la planta.
+    }
+
+    override fun abonar() {
+        println("$nombre está siendo abonada...")
+        // TODO Ampliación: implementación de probabilidad para Crecimiento/Floración de la planta.
+    }
+
+    override fun transplantar() {
+        println("$nombre está siendo transplantada...")
+        TODO("Not yet implemented")
+    }
+
+    override fun podar() {
+        println("La planta está siendo podada...")
+        TODO("Not yet implemented")
+    }
 }
+
